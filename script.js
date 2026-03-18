@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const yesPrompts = [
         "Yay! Em rất vui khi chị đồng ý! 😊",
     ];
-    const notifyEmail = "vasmogna191004@gmail.com";
 
     if (!animContainer || typeof lottie === "undefined") {
         return;
@@ -84,13 +83,10 @@ document.addEventListener("DOMContentLoaded", function () {
             if (heading) {
                 heading.textContent = yesPrompts[0];
             }
+            yesBtn.style.display = "none";
             if (noBtn) {
                 noBtn.style.display = "none";
             }
-
-            const subject = encodeURIComponent("She said YES to coffee! ☕");
-            const body = encodeURIComponent("Good news! The user clicked 'Có' on the invite page.");
-            window.location.href = "mailto:" + notifyEmail + "?subject=" + subject + "&body=" + body;
         });
     }
 
