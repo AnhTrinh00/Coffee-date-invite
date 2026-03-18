@@ -3,18 +3,21 @@ document.addEventListener("DOMContentLoaded", function () {
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
     const heading = document.querySelector("h1");
-    const supportsHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     const originalPrompt = heading ? heading.textContent : "";
     const DEFAULT_ANIM = "animations/hand-over-mouth.json";
     const YES_ANIM = "animations/head-nod.json";
     const NO_ANIM = "animations/happy-cry.json";
+    const AGREE_ANIM = "animations/heart-eyes.json";
     const noPrompts = [
-        "Cho em thêm một cơ hội nho nhỏ được không?",
-        "Hay mình đi 15 phút thôi, em mời chị ly cà phê nha ☕",
-        "Em hứa sẽ kể chuyện thật vui cho chị nghe.",
-        "Nếu hôm nay bận, mình hẹn ngày khác cũng được mà.",
-        "Em vẫn mong câu trả lời là Có đó nhe 💖"
+        "Lâu lắm rồi em chưa được đi cà phê sáng với chị đó!",
+        "Đi chút thôi rồi về, em hứa không có lâu đâu.",
+        "Trời nóng ấy nên đi uống cho nó mát",
+        "Em vẫn mong câu trả lời là Có đó nha!"
     ];
+    const yesPrompts = [
+        "Yay! Em rất vui khi chị đồng ý! 😊",
+    ];
+    const notifyEmail = "vasmogna191004@gmail.com";
 
     if (!animContainer || typeof lottie === "undefined") {
         return;
@@ -48,15 +51,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Default animation
     loadAnimation(DEFAULT_ANIM);
 
-    function resetToDefaultIfNotHoveringButtons() {
-        const isOverYes = yesBtn && yesBtn.matches(":hover");
-        const isOverNo = noBtn && noBtn.matches(":hover");
-
-        if (!isOverYes && !isOverNo) {
-            loadAnimation(DEFAULT_ANIM);
-        }
-    }
-
     function resetToDefaultIfTappedOutsideButtons(event) {
         const target = event.target;
         const clickedYes = yesBtn && yesBtn.contains(target);
@@ -71,13 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (noBtn) {
-        if (supportsHover) {
-            noBtn.addEventListener("mouseover", function () {
-                loadAnimation(NO_ANIM);
-            });
-            noBtn.addEventListener("mouseleave", resetToDefaultIfNotHoveringButtons);
-        }
-
         noBtn.addEventListener("click", function () {
             loadAnimation(NO_ANIM);
 
@@ -92,25 +79,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (yesBtn) {
-        if (supportsHover) {
-            yesBtn.addEventListener("mouseover", function () {
-                loadAnimation(YES_ANIM);
-            });
-            yesBtn.addEventListener("mouseleave", resetToDefaultIfNotHoveringButtons);
-        }
-
         yesBtn.addEventListener("click", function () {
-            loadAnimation(YES_ANIM);
+            loadAnimation(AGREE_ANIM);
             if (heading) {
-                heading.textContent = originalPrompt;
+                heading.textContent = yesPrompts[0];
             }
+            if (noBtn) {
+                noBtn.style.display = "none";
+            }
+
+            const subject = encodeURIComponent("She said YES to coffee! ☕");
+            const body = encodeURIComponent("Good news! The user clicked 'Có' on the invite page.");
+            window.location.href = "mailto:" + notifyEmail + "?subject=" + subject + "&body=" + body;
         });
     }
 
-    if (supportsHover) {
-        document.addEventListener("mousemove", resetToDefaultIfNotHoveringButtons);
-    } else {
-        document.addEventListener("touchstart", resetToDefaultIfTappedOutsideButtons, { passive: true });
-        document.addEventListener("click", resetToDefaultIfTappedOutsideButtons);
-    }
+    document.addEventListener("touchstart", resetToDefaultIfTappedOutsideButtons, { passive: true });
+    document.addEventListener("click", resetToDefaultIfTappedOutsideButtons);
 });
