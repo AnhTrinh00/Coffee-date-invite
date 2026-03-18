@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee?</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        lottie.loadAnimation({
+            container: document.getElementById('shyAnimation'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'animations/laughing.json'
+        });
+    });
+    </script>
+</head>
+<body>
+    <h1>Em có một thứ muốn hỏi chị!</h1>
+    <div id="shyAnimation" style="width:300px"></div>
+    <div ontouchstart="">
+        <div id="shyAnimation" class="askBtn">
+            <a href="answer.html">OK nè</a>
+            <!--<a href="answer.html" onclick="location.replace('answer.html'); return false;">OK nè</a>-->
+        </div>
+    </div>
+</body>
+</html>
