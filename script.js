@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
     const heading = document.querySelector("h1");
+    const supportsHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const originalPrompt = heading ? heading.textContent : "";
     const DEFAULT_ANIM = "animations/hand-over-mouth.json";
     const YES_ANIM = "animations/head-nod.json";
     const NO_ANIM = "animations/happy-cry.json";
@@ -46,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Default animation
     loadAnimation(DEFAULT_ANIM);
 
-    function resetIfNotHoveringButtons() {
+    function resetToDefaultIfNotHoveringButtons() {
         const isOverYes = yesBtn && yesBtn.matches(":hover");
         const isOverNo = noBtn && noBtn.matches(":hover");
 
@@ -55,11 +57,30 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    function resetToDefaultIfTappedOutsideButtons(event) {
+        const target = event.target;
+        const clickedYes = yesBtn && yesBtn.contains(target);
+        const clickedNo = noBtn && noBtn.contains(target);
+
+        if (!clickedYes && !clickedNo) {
+            loadAnimation(DEFAULT_ANIM);
+            if (heading) {
+                heading.textContent = originalPrompt;
+            }
+        }
+    }
+
     if (noBtn) {
-        noBtn.addEventListener("mouseover", function () {
-            loadAnimation(NO_ANIM);
-        });
+        if (supportsHover) {
+            noBtn.addEventListener("mouseover", function () {
+                loadAnimation(NO_ANIM);
+            });
+            noBtn.addEventListener("mouseleave", resetToDefaultIfNotHoveringButtons);
+        }
+
         noBtn.addEventListener("click", function () {
+            loadAnimation(NO_ANIM);
+
             if (!heading) {
                 return;
             }
@@ -68,15 +89,28 @@ document.addEventListener("DOMContentLoaded", function () {
             heading.textContent = noPrompts[promptIndex];
             noClickCount += 1;
         });
-        noBtn.addEventListener("mouseleave", resetIfNotHoveringButtons);
     }
 
     if (yesBtn) {
-        yesBtn.addEventListener("mouseover", function () {
+        if (supportsHover) {
+            yesBtn.addEventListener("mouseover", function () {
+                loadAnimation(YES_ANIM);
+            });
+            yesBtn.addEventListener("mouseleave", resetToDefaultIfNotHoveringButtons);
+        }
+
+        yesBtn.addEventListener("click", function () {
             loadAnimation(YES_ANIM);
+            if (heading) {
+                heading.textContent = originalPrompt;
+            }
         });
-        yesBtn.addEventListener("mouseleave", resetIfNotHoveringButtons);
     }
 
-    document.addEventListener("mousemove", resetIfNotHoveringButtons);
+    if (supportsHover) {
+        document.addEventListener("mousemove", resetToDefaultIfNotHoveringButtons);
+    } else {
+        document.addEventListener("touchstart", resetToDefaultIfTappedOutsideButtons, { passive: true });
+        document.addEventListener("click", resetToDefaultIfTappedOutsideButtons);
+    }
 });
